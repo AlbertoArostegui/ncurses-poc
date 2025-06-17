@@ -1,6 +1,9 @@
 # NCURSES Proof of concept and playground
 
-To compile, just `make`
+## Dependencies
+Just ncurses
+
+To compile, `make ascii` for the ascii renderer, `make hello` for a simple hello world program to try ncurses.
 
 The idea is to create an application to render images in the terminal.
 Ideally, the user would give a PATH to render an image from his computer.
