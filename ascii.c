@@ -9,6 +9,8 @@
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "stb_image_resize2.h"
 
+#define FONT_WXH_RATIO 0.4
+
 int main(int argc, char *argv[]) {
 
     if (argc < 2) {
@@ -24,19 +26,36 @@ int main(int argc, char *argv[]) {
     unsigned char *ImageData = stbi_load(argv[1], &width, &height, &pixelSize, 0);
     unsigned char *resizedData;
 
-    int row,col;
+    int s_row,s_col,row,col;
+
+    double aspect_ratio_img, aspect_ratio_scr;
+
     initscr();
-    getmaxyx(stdscr, row, col);
+    getmaxyx(stdscr, s_row, s_col);
     endwin();
 
+    aspect_ratio_img = (float)width/(float)height;
+    aspect_ratio_scr = FONT_WXH_RATIO * (float)s_col/(float)s_row;
+
+    printf("r: %d c: %d ai: %f as: %f \n", s_row, s_col, aspect_ratio_img, aspect_ratio_scr);
+
+    if (aspect_ratio_img < aspect_ratio_scr) {
+      col = (int)((float)s_col * aspect_ratio_img/aspect_ratio_scr);
+      row = s_row;
+    } else {
+      col = s_col;
+      row = (int)((float)s_row * (aspect_ratio_scr/aspect_ratio_img));
+    }
+
+    aspect_ratio_scr = FONT_WXH_RATIO * (float)col/(float)row;
+    printf("r: %d c: %d ai: %f as: %f \n", row, col, aspect_ratio_img, aspect_ratio_scr);
     //resizedData = malloc(width * height * pixelSize);
     resizedData = malloc(col * row * pixelSize);
     stbir_resize_uint8_linear(ImageData, width, height, width*pixelSize,
                                             resizedData, col, row, col*pixelSize, 
                                             pixelSize);
 
-
-    if(ImageData) {
+    if(resizedData) {
 
         //printf("Width: %d\nHeight: %d\nPixelSize: %d\n", width, height, pixelSize);
         /*
@@ -71,7 +90,7 @@ int main(int argc, char *argv[]) {
                 //Print out the indexed char
                 addch(chars[charIndex]);
             }
-            //addch('\n');
+            if (col < s_col) addch('\n');
         }
         getch();
 
