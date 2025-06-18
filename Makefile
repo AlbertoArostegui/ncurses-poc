@@ -10,7 +10,7 @@ hello_world_ncurses.o: hello_world_ncurses.c
 ascii: ascii.o
 	gcc -o ./asciiart ascii.o ${LIBS}
 
-ascii.o:
+ascii.o: ascii.c
 	gcc -c ascii.c ${CFLAGS}
 
 clean:
