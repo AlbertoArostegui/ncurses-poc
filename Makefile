@@ -1,5 +1,5 @@
 CFLAGS = -Wall -Werror
-LIBS = -lncurses
+LIBS = -lncurses -lm
 
 hello: hello_world_ncurses.o
 	gcc -o hello hello_world_ncurses.o ${LIBS}

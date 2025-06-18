@@ -109,10 +109,11 @@ int main()
     
     uint16_t startx = COLS / 2;
     uint16_t starty = LINES / 2;
-    // char* str = "Macintosh mamahuevo del meno";
-    // size_t len = strlen(str);
-
     /*
+    char* str = "Hola buenas, que tal";
+    size_t len = strlen(str);
+
+    
     // Greeting
     uint8_t cont = 0;
     attrset(A_BOLD | A_UNDERLINE);
@@ -129,6 +130,7 @@ int main()
     }
     sleep_ms(500);
     */
+    
     curs_set(0);
     startx = (COLS - needed_width) / 2;
     starty = (LINES - n_dir_entries) / 2;
