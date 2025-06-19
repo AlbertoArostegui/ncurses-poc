@@ -82,28 +82,21 @@ short curs_color(char fg)
     }
 }
 
+
 void gen_pairs() {
-  for (char fg = 0; fg < 8; fg++) {
-    init_pair(fg, curs_color(fg), COLOR_BLACK);
-  }
+  for (char fg = 0; fg < 8; fg++)
+    for (char bg = 0; bg < 8; bg++)
+      init_pair((fg << 4) | bg, curs_color(fg), curs_color(bg));
 }
 
 void set_color(char fg) {
-  if (fg >= 8) {
     attron(A_BOLD);
-    attron(COLOR_PAIR(fg-8));
-  } else {
     attron(COLOR_PAIR(fg));
-  }
 }
 
 void unset_color(char fg) {
-  if (fg >= 8) {
     attroff(A_BOLD);
-    attroff(COLOR_PAIR(fg-8));
-  } else {
-    attroff(COLOR_PAIR(fg));
-  }
+    attron(COLOR_PAIR(fg));
 }
 
 char get_color(color_t color) {
@@ -188,24 +181,32 @@ int main(int argc, char *argv[]) {
             for (int columIndex = 0; columIndex < col; columIndex++)
             {
                 // Take out the RGBA data
-                color_t color;
-                color.r = *pixels++;
-                color.g = *pixels++;
-                color.b = *pixels++;
+                color_t fg_color;
+                uint8_t r = *pixels++;
+                uint8_t b = *pixels++;
+                uint8_t g = *pixels++;
+                fg_color.r = r;
+                fg_color.g = g;
+                fg_color.b = b;
+                color_t bg_color;
+                bg_color.r = r;
+                bg_color.b = b;
+                bg_color.g = g;
                 if (pixelSize >= 4) {
                     //unsigned char A = *pixels++;
                     pixels++;
                 }
 
                 // Calculate the average of RGB values
-                float Avg = (color.r+color.g+color.b) / 3.0f;
+                float fg_avg = (fg_color.r+fg_color.g+fg_color.b) / 3.0f;
                 // Calculate the value to index the character array
-                int charIndex = (int)((charsLen-1) * (Avg / 255.0f));
+                int charIndex = (int)((charsLen-1) * (fg_avg / 255.0f));
                 //Print out the indexed char
-                char c = get_color(color);
-                set_color(c);
+                // char fg = get_color(fg_color);
+                char bg = get_color(bg_color);
+                set_color(bg);
                 addch(chars[charIndex]);
-                unset_color(c);
+                unset_color(bg);
             }
             if (col < s_col) addch('\n');
         }
